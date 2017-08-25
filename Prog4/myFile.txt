@@ -1,0 +1,9 @@
+Mars;Jupiter;34400
+Earth;Venus;162
+Saturn;Neptune;38400
+Earth;Mars;339
+Pluto;Sun;367000
+Mars;Neptune;559
+Sun;Neptune;2344
+Pluto;Saturn;3426
+Saturn;Sun;9000

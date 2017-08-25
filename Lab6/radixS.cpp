@@ -1,0 +1,119 @@
+#include <queue>
+#include <iostream>
+#include <vector>
+#include <sstream>
+#include <cmath>
+#include <stdio.h>
+
+using namespace std;
+
+int maxElemLength(vector<string>& a);
+int GetDigit(string r, int k);
+vector<queue<string> > ItemsToQueues(vector<string>& a, int k);
+vector<string> QueuesToArray(vector<queue<string> >& QA, int numVals);
+void RadixSort(vector<string>& a, int numDigits);
+void PrintVector(vector<string>& a);
+
+int main()
+{
+		
+	vector<string> a;
+	a.push_back("zebra");
+	a.push_back("apple");
+        a.push_back("orange");
+        a.push_back("can");
+        a.push_back("candy");
+        a.push_back("a");
+	a.push_back("top");
+        a.push_back("pumpkin");
+        a.push_back("today");
+        a.push_back("parade");
+	cout << "Original array:\t\t";
+       	PrintVector(a);
+	RadixSort(a, maxElemLength(a));
+	cout << "Radix sorted array:\t";
+	PrintVector(a);
+	return 0;
+}
+
+int maxElemLength(vector<string>& a)
+{
+	// 1. returns the number of digits of
+	// the largest integer within vector v
+	int currmax = 0;
+	for(int i = 0; i < a.size(); i++)
+	{
+		if(a[i].length() > currmax)
+			currmax = a[i].length();
+	}
+		return currmax;
+}
+
+int GetChar(string r, int k)
+{
+	// 2. Returns the kth char of string
+	return r[k];
+
+}
+
+vector<queue<string> > ItemsToQueues(vector<string>& a, int k)
+{
+	// 3. Creates and returns the intermediate
+	// array of ten queues
+ 	vector<queue<string> > QA(128);
+	for(int i = 0; i < a.size(); i++)
+		if(GetChar(a[i], k))
+		{
+			QA[(int)GetChar(a[i], k)].push(a[i]);	
+		}
+		else
+		{
+			QA[0].push(a[i]);
+		}	
+			
+	return QA;	
+
+}
+
+vector<string> QueuesToArray(vector<queue<string> >& QA, int numVals)
+{
+	// 4. Creates a new list from the values
+	// in the intermediate array of queues
+	vector<string> a;
+	int pos = 0;
+	for(int i = 0; i < QA.size(); i++)
+		while(!QA[i].empty())
+		{
+			a[pos] = QA[i].front();
+			QA[i].pop();
+			pos++;
+		}
+	return a;
+
+}
+void RadixSort(vector<string>& a, int numDigits)
+{
+	// 5. Implements the radix sort, 
+	// calling ItemsToQueue and QueuesToArray
+	int max = maxElemLength(a);
+	vector<queue<string> > QA(128);
+	for(int i = 0; i <= max; i++)
+	{
+		QA = ItemsToQueues(a, i);
+		a = QueuesToArray(QA, a.size());
+	}	
+	
+}
+
+void PrintVector(vector<string>& a)
+{
+	// 6. Prints out the contents of the
+	// vector parameter without modifying
+	// it in any way
+	for(int i = 0; i < a.size(); i++)
+	{
+		cout << a[i] << " ";
+	}
+
+	cout << "\n";
+}

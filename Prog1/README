@@ -1,0 +1,61 @@
+
+The Line Editor
+
+Author: 	Preston Shankle
+Due Date:	2/10/17
+Course: 	CSC245 
+Instructor: 	Dr. Digh
+
+1.	The Line Editor accomplishes three main goals:
+						a. Sequentially converting the lines of a text file into a doubly linked list of nodes.
+						b. Allowing a user to edit the doubly linked list of nodes, the functions of which are limited to adding lines and deleting lines.
+						   	The user may also print the linked list of nodes and navigate through the lines in a sequential up and down manner.
+						c. Implementing a save function so that each line of the linked list can be saved to a text file at the discretion of the user.
+
+2. 	Input files used by the Line Editor include:
+						   testfile
+	The output file that is written by the Line Editor is the same as the testfile. Upon using the save function in the program, the contents of the linked list are written to the same input file.
+
+3. 	Outline of the Object Oriented Program Design:
+						a. Classes Included
+							i. 	std::iostream		-- Built into the standard library
+							ii. 	std::fstream		-- Built into the standard library
+							iii. 	std::string 		-- Built into the standard library
+							iv. 	linelist.h		-- Implemented by this program
+						b. Class Descriptions
+							i. 	linelist.h / linelist.cpp:	
+								A. 	Private Variables:
+										I.	LineNode* currLine:		A LineNode pointer that points to the line currently being used by the client program.
+										II.	int currLineNum: 		Integer used by the client program to keep track of the number of the current line.
+										III.	int length: 			Integer used by the client program to count how many lines exist altogether.
+								B. 	Public Variables:
+										I.	string topMessage:		A string that holds a buffer text which is used to indicate the top of the linked list. Will never be viewed on-screen.
+										II.	string bottomMessage:		A string that holds a buffer text which is used to indicate the bottom of the linked list. Will never be viewed on-screen.
+								C. 	Public Functions:
+										I.	LineList(): 			Constructor method that builds a doubly linked list of LineNodes containing a currLine pointer and a line2 (used as last line) pointer.
+																These two LineLode pointers are linked together to construct a doubly linked list.
+										II.	void goToTop():			Moves currLine to point at the line at the top of the LineList.
+										III.	void goToBottom():		Moves currLine to point at the line at the bottom of the LineList.
+										IV. 	void insertLine(string newLine):Takes in a string variable called newLine, adds a new LineNode to the bottom of the LineList, and populates the new node's info with newLine.
+										V. 	void deleteLine():		Deletes the line that currLine is pointing at, leaving currLine pointing at the next LineNode in the LineList.
+										VI.	void printList():		Prints the entire list from top to bottom.
+										VII.	void moveNextLine():		Moves currLine to point at the next LineNode in the LineList. If the next node contains bottomMessage, currLine will not move.
+										VIII.	void movePrevLine():		Moves currLine to point at the previous LineNode in the LineList. If the next node contains topMessage, currLine will not move.			
+	 									IX.	int getCurrLineNum():		Returns the integer currLineNum, which holds the number of the current line.
+										X.	int getLength():		Returns the integer length, which holds the count of how many lines exist altogether.
+										XI.	string getCurrLine():		Returns the info field of the LineNode that currLine is pointing at.
+								D.	Struct LineNode:
+										I. 	string info:			String field that holds the info of the LineNode.
+
+										II.	LineNode* next:			LineNode pointer that is used to point to a next LineNode.
+										III.	LineNode* back:			LineNode pointer that is used to point to a previous LineNode.
+						c. Algorithm Used by editor.cpp:
+							The client file of the Line Editor first reads in the contents of the file. For each line read in, the line is inserted into a LineList. After each line has been read in from the external 
+								file and inserted into a LineList, each line of the LineList is sequentially printed to the console, preceded by the line number and a '>'. After the LineList has been printed, the
+								user now gets an opportunity to input commands to the program. Typing an 'I' and pressing return will call the insertLine function implemented in the linelist.cpp class. The user
+								can input a line into the console, hit return, and the line will be added to the LineList. Placement of the new line depends on current line position. If a 'D' is entered by the 
+								user, the current line will be deleted. If an 'L' is entered by the user, the entire LineList will be printed using the printList function implemented by the linelist.cpp class,
+								but only if the length of the LineList is greater than 0. Entering a 'P' will move to the previous line in the list using the movePrevLine function from the linelist.cpp class, but only
+								if the length of the LineList is greater than 0. Entering an 'N' will move to the next line in the list using the moveNextLine function from the linelist.cpp class, but only if the
+								length of the LineList is greater than 0. Finally, entering an 'E' will write out the LineList to testfile, but only if the length of the LineList is greater than 0. After E is pressed,
+								the program will end. 

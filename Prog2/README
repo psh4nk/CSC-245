@@ -1,0 +1,53 @@
+
+The Postfix Desk Calculator
+
+Author:		Preston Shankle
+Due Date:	2/24/2017
+Course:		CSC245
+Instructor:	Dr. Digh
+
+1.	The Postfix Desk Calculator accomplishes two main goals: 
+					a.	Parse strings input by the user, accounting for any exceptions that may occur and accounting for incorrect data types.
+					b. 	While parsing the strings, push integers to a stack and execute any options or operators that are input to the console.
+2.	The input used by the Postfix Desk Calculator is any character typed on the keyboard while the program is executing.
+	The output of the Postfix Desk Calculator includes operations performed on the stack, limited to reading the top element and reading the entire stack.
+3.	Classes used by the Postfix Desk Calculator, the attributes therein, and the operations that the classes can perform are as follows:
+				a. bst.cpp:				
+						i.	optionSwitch:		Takes in a char c and Stack of integers s as parameters. Char c is derived from the stringParser class,
+											and defines the option that the user wishes to perform on the stack. The options include:
+												 p:	prints the top value of the stack.
+												 n:	prints the top value of the stack and pops it off. 
+												 f: 	prints the entire contents of the stack; alters nothing.
+												 c:	clears the stack, popping all elements.
+												 d:	duplicates the top stack value and pushes the copy on top.
+												 r:	swaps the two top values on the stack.
+						ii.	printStack:		Takes in a Stack of integers s as a parameter. Prints the entire stack, altering none of the contents.
+										 	Used by the optionSwitch method.
+						iii. 	isOperator:		Takes in a char c as a parameter. Determines whether the char is one of the operator characters, which
+											include +, -, *, /, and %.
+						iv.	isOptions:		Takes in a char c as a parameter. Determines whether the char is one of the option characters, which 
+											have been defined above under optionSwitch.
+						v.	operationSwitch:	Takes in two integers num1 and num2, a character c, and a Stack of integers s as parameters. Determines
+											which of the integer operations will be performed by the user using a switch statement, accounting for division
+											by zero. Integer result is returned.
+						vi.	stringParser:		Takes in a string input and a Stack of integers s. This method is the main driver of the program.  A char c is created 
+											from the string that is input by the user. A for loop is used to parse the string. Parsing the string includes checking if 
+											the negative signifier '_' is used, checking if there is a space in the string, checking if the current character is a digit,
+											checking if an option has been entered using the isOperator method, checking if an option has been entered using the 
+											isOptions method, and finally pushing any integers entered onto the stack.
+				b. stack.cpp/stack.h
+						i.	Stack:			Constructor method that builds the stack using an array of objects called theArray.
+						ii.	isEmpty:			Checks to see if the stack is empty.
+						iii.	isFull:			Checks to see if the stack is full.
+						iv.	makeEmpty:		Clears the stack of all elements.
+						v.	top:				Returns object at the top of the stack.	
+						vi.	pop:			Pops (removes) object at the top of the stack.
+						vii.	push:			Push (add) an item to the top of the stack.
+						viii.	topAndPop:		Pops object from the stack and returns the same object.
+4.	Outline of algorithm used by the Postfix Desk Calculator:
+				A string is processed by the program. This includes the systematic evaluation of each piece of the string, which can be as long as the user desires. While processing
+				the string, any integers input by the user are pushed onto a stack. Any non-integers that are either operators or options go to their respective methods to be further processed.
+				Any non-integer input that is not an operator or an option is ignored by the program. The program determines whether the characters input are operators, options, or non-relative 
+				characters using boolean methods. In general, an attempt to avoid nested loops will be made in order to improve efficiency. While loops will be necessary considering the nature of the program.
+				
+				

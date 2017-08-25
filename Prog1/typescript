@@ -1,0 +1,274 @@
+Script started on Fri 10 Feb 2017 11:47:02 PM EST
+]0;shankle_p@cobra:~/CSC245/Prog1[?1034h[shankle_p@cobra Prog1]$ cat editor.cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "linelist.h"
+
+using namespace std;
+
+void functionswitch(int intselection, LineList& l, string& selection, ofstream& outfile, string& filename);
+int stringtoint(LineList l, string& selection);
+void makelist(ifstream& infile, LineList& l);
+void insert(LineList& l);
+void writeout(ofstream& outfile, LineList& l, string& filename);
+
+int main(int argc, char *argv[])
+{
+	LineList l;
+	string selection;
+	string filename = argv[1];
+	ifstream infile;
+	infile.open(filename.c_str());
+	ofstream outfile;
+	//outfile.open(filename, ios_base::app);	
+	makelist(infile, l);
+	if(l.getLength() > 0)
+		l.printList();
+	functionswitch(stringtoint(l, selection), l, selection, outfile, filename);
+	if(l.getLength() > 0 && selection == "E")
+		writeout(outfile, l, filename);
+	return 0;
+}
+
+void functionswitch(int intselection, LineList& l, string& selection, ofstream& outfile, string& filename)
+{
+	while(intselection != 6){
+		switch(intselection)
+		{
+		case 1:
+			insert(l);
+			break;
+		case 2:
+			l.deleteLine();
+			break;
+		case 3:
+			if(l.getLength() > 0)
+				l.printList();
+			break;
+		case 4:
+			if(l.getLength() > 0)
+				l.movePrevLine();
+			break;
+		case 5:
+			if(l.getLength() > 0)
+				l.moveNextLine();
+			break;
+		case 6:
+			if(l.getLength() > 0)
+				writeout(outfile, l, filename);
+			break;
+		default:
+			break;
+		}
+		intselection = stringtoint(l, selection);
+	}
+}
+
+int stringtoint(LineList l, string& selection)
+{
+	if(l.getCurrLineNum() > 0)
+		cout << l.getCurrLineNum() << "> ";
+	else
+		cout << "0> ";
+	getline(cin, selection);
+	if(selection == "I")
+		return 1;
+	else if(selection == "D")
+		return 2;
+	else if(selection == "L")
+		return 3;
+	else if(selection == "P")
+		return 4;
+	else if(selection == "N")
+		return 5;
+	else if(selection == "E")
+		return 6;
+	else 
+		return 0;
+}
+
+void makelist(ifstream& infile, LineList& l)
+{
+	string s;
+	while(getline(infile,s)){
+		l.insertLine(s);
+	}
+}
+
+void insert(LineList& l){
+	string newLine;
+	if(l.getCurrLineNum() > 0)
+		cout << l.getCurrLineNum() << "> ";
+	else 
+		cout << "0> ";
+	getline(cin, newLine);
+        l.insertLine(newLine);	
+}
+
+	
+void writeout(ofstream& outfile, LineList& l, string& filename)
+{
+	outfile.open(filename.c_str());
+	l.goToTop();
+	if(l.getLength() <= 0)
+		outfile << l.getCurrLine() << '\n';
+	for(int i = 0; i < l.getLength(); i++){
+		outfile << l.getCurrLine() << '\n';
+		l.moveNextLine();
+	}
+}
+]0;shankle_p@cobra:~/CSC245/Prog1[shankle_p@cobra Prog1]$ cat linelist.cpp
+#include <iostream>
+#include "linelist.h"
+
+LineList::LineList()
+{
+	LineNode *line = new LineNode;
+	LineNode *line2 = new LineNode;
+
+	line -> info = topMessage;
+	currLine = line;
+	currLineNum = 0;
+	length = 0;
+	line2 -> info = bottomMessage;
+	currLine -> back = NULL;
+	currLine -> next = line2;
+	line2 -> back = line;
+	line2 -> next = NULL;
+}
+
+void LineList::goToTop() 
+{
+	// Post : Advances currLine to line 1
+	while(currLine -> back -> info != topMessage)	
+		movePrevLine();
+	
+
+	
+}
+
+void LineList::goToBottom() 
+{
+	// Post : Advances currLine to last line
+	while(currLine -> next -> info != bottomMessage)
+		moveNextLine();
+	
+}
+
+void LineList::insertLine(string newLine)
+{
+	// post : newLine has been inserted after the current line
+	LineNode *newNode = new LineNode;
+	LineNode *backNode = new LineNode;
+
+	backNode = currLine;
+
+	newNode -> info = newLine;
+	backNode -> next -> back = newNode;
+	newNode -> next = backNode -> next;
+	newNode -> back = backNode;
+	backNode -> next = newNode;
+
+	currLine = newNode;
+	currLineNum++;
+	length++;
+}
+
+void LineList::deleteLine()
+{
+	// post : deletes the current line leaving currentLine
+	//	  pointing to line following
+	LineNode *backNode = new LineNode;
+	LineNode *nextNode = new LineNode;
+	
+	if(currLine -> info != bottomMessage)
+	{	
+		backNode = currLine -> back;
+		nextNode = currLine -> next;
+		backNode -> next = nextNode;
+		nextNode -> back = backNode;
+		currLine = nextNode;
+		length--;
+	}
+}
+
+void LineList::printList() 
+{
+	int lineNum = 1;
+	LineNode *mark = currLine;
+	goToTop();
+	int markNum = currLineNum;
+	LineNode *curr = currLine;
+ 	goToBottom();	
+	while(curr -> info != bottomMessage)
+	{
+		std::cout << markNum << "> " << curr -> info << endl;
+		curr = curr -> next;
+		markNum++;
+	}
+}
+
+string LineList::getCurrLine() const
+{
+	return currLine -> info;
+}
+
+void LineList::moveNextLine()
+{
+	// Post : Advances currLine (unless already at last line)
+	if(currLine -> next -> info != bottomMessage)
+	{
+		currLine = currLine -> next;
+		currLineNum++;
+	}
+}
+
+void LineList::movePrevLine()
+{	// Post : Advances currLine (unless already at last line)
+	if(currLine -> back -> info != topMessage && currLine -> info != topMessage)
+	{
+		currLine = currLine -> back;
+		currLineNum--;
+	}
+}
+
+int LineList::getCurrLineNum() const
+{
+	return currLineNum;
+}
+
+int LineList::getLength() const
+{
+	return length;
+}
+
+
+]0;shankle_p@cobra:~/CSC245/Prog1[shankle_p@cobra Prog1]$ c++ editor.cpp list[K[Knelist.o
+]0;shankle_p@cobra:~/CSC245/Prog1[shankle_p@cobra Prog1]$ EDIT[K[K[K[Ka.put[K[K[Kout testfile
+1> This is my first line.
+2> This is my second line.
+3> This is my third line.
+3> P
+2> I
+2> A brand new line is inserted!
+3> L
+1> This is my first line.
+2> This is my second line.
+3> A brand new line is inserted!
+4> This is my third line.
+4> N
+4> D
+4> L
+1> This is my first line.
+2> This is my second line.
+3> A brand new line is inserted!
+3> D
+3> L
+1> This is my first line.
+2> This is my second line.
+2> E
+]0;shankle_p@cobra:~/CSC245/Prog1[shankle_p@cobra Prog1]$ [K[shankle_p@cobra Prog1]$ [K[shankle_p@cobra Prog1]$ exit
+exit
+
+Script done on Fri 10 Feb 2017 11:50:29 PM EST

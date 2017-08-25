@@ -1,0 +1,258 @@
+Script started on Fri 24 Feb 2017 11:31:29 PM EST
+]0;shankle_p@cobra:~/CSC245/Prog2[?1034h[shankle_p@cobra Prog2]$ cat -n dc.cpp
+     1	#include <string>
+     2	#include <iostream>
+     3	#include <sstream>
+     4	#include <cstdlib>
+     5	#include <cstring>
+     6	#include <cctype>
+     7	#include "stack.h"
+     8	
+     9	using namespace std;
+    10	
+    11	void optionSwitch(char& c, Stack<int>& s);
+    12	void printStack(Stack<int>& s);
+    13	bool isOperator(char& c);
+    14	int operationSwitch(int& num1, int& num2, char& c, Stack<int>& s);
+    15	void stringParser(string& input, Stack<int>& s);
+    16	
+    17	int main()
+    18	{
+    19		Stack<int> s;
+    20		string input;
+    21		while(true)
+    22		{
+    23			getline(cin, input);
+    24			try
+    25			{
+    26				stringParser(input, s);
+    27			}
+    28			catch (Underflow exc)
+    29			{
+    30				cout << "dc: stack empty" << endl;
+    31			}
+    32			catch (Overflow exc)
+    33			{
+    34				cout << "dc: stack full" << endl;
+    35			}
+    36		}
+    37		return 0;
+    38	}
+    39	
+    40	void optionSwitch(char& c, Stack<int>& s)
+    41	{
+    42		// pre: a char c has been initialized with data from the
+    43		//      user
+    44		// post: one of the 6 cases has been used to perform a 
+    45		// 	 function on the stack 
+    46		switch(c)
+    47		{
+    48			case 'p':
+    49				std::cout << s.top() << endl;
+    50				break;
+    51			case 'n':
+    52				std::cout << s.topAndPop();
+    53				break;
+    54			case 'f':
+    55				printStack(s);  
+    56				break;
+    57			case 'c':
+    58				s.makeEmpty();
+    59				break;
+    60			case 'd':
+    61				int temp; 
+    62				temp = s.top();
+    63				s.push(temp);
+    64				break;
+    65			case 'r':
+    66				int top1, top2;
+    67				top1 = s.topAndPop();
+    68				top2 = s.topAndPop();
+    69				s.push(top1);
+    70				s.push(top2);
+    71				break;
+    72			default:
+    73				break;
+    74		}	// end switch
+    75	}
+    76	
+    77	void printStack(Stack<int>& s)
+    78	{
+    79		// pre:  a stack has been pushed on to with data from the 
+    80		//       user
+    81		// post: the stack is printed to the console, separated 
+    82		// 	 by lines
+    83		Stack<int> temp = s;
+    84		while(!temp.isEmpty())
+    85			cout << temp.topAndPop() << "\n";
+    86	}
+    87	
+    88	bool isOperator(char& c)
+    89	{
+    90		// pre: char c has been initialized with data from the user
+    91		// post: a boolean is returned determining whether
+    92		// 	 char array c contains one of the operator characters
+    93		if(c == '+' || c == '-' || c == '*' || c == '/' || c == '%')
+    94			return true;
+    95		else 
+    96			return false;
+    97	}
+    98	
+    99	bool isOption(char& c)
+   100	{
+   101		// pre: char c has been initialized with data from the user
+   102		// post: a boolean is returned determining whether 
+   103		//       char array c contains one of the option characters
+   104		if(c == 'p' || c == 'n' || c == 'f' || c == 'c' || c == 'd' || c == 'r')
+   105			return true;
+   106		else 
+   107			return false;
+   108	}
+   109	
+   110	int operationSwitch(int& num1, int& num2, char& c, Stack<int>& s)
+   111	{
+   112		// pre: num1, num2, and char c have all been initialized 
+   113		// 	with data from the input string
+   114		// post: a new result from one of the 5 calculations
+   115		// 	 has been pushed to the stack
+   116		int result = 0;
+   117		try
+   118		{
+   119		switch (c)
+   120		{
+   121			case '+':
+   122				result = num2 + num1;
+   123				break;
+   124			case '-':
+   125				result = num2 - num1;
+   126				break;
+   127			case '*':
+   128				result = num2 * num1;
+   129				break;
+   130			case '/': 
+   131				if(num1 != 0)
+   132					result = num2 / num1;
+   133				else
+   134					cout << "Integer division by zero not allowed.\n";
+   135					
+   136				break;
+   137			case '%':
+   138				if(num1 != 0)
+   139					result = num2 % num1;
+   140				else
+   141					cout << "Integer division by zero not allowed.\n";
+   142				break;
+   143			default:
+   144				break;
+   145		}
+   146		}
+   147		catch (DivisionByZero exc)
+   148		{
+   149			cout << "Integer division by zero not allowed.\n";
+   150		}
+   151		return result;
+   152	}
+   153	
+   154	void stringParser(string& input, Stack<int>& s)
+   155	{
+   156		// pre: input has been initialized with input from the user
+   157		// post: calculator has been ran by the user and all desired functions
+   158		//	have been used.
+   159	
+   160		char *c = new char[input.size() + 1];
+   161		memcpy(c,input.c_str(), input.size());
+   162		int j = 0;
+   163		int l = 0;
+   164		int k, num1, num2;
+   165		bool makenegative = false;
+   166		string currint;
+   167		for(int i = 0; i < input.length(); i++)
+   168		{
+   169			currint = "";
+   170			if(c[j] == '_'){
+   171				makenegative = true;
+   172				j++;
+   173			}
+   174			if(c[j] == ' '){
+   175				j++;
+   176			}
+   177			while(isdigit(c[j]))
+   178			{
+   179				ostringstream oss;
+   180				oss << c[j];
+   181				currint += oss.str();
+   182				j++;
+   183				l++;
+   184			}
+   185			if(l > 0)
+   186			{
+   187				int k = atoi(currint.c_str());
+   188				if (makenegative)
+   189					k = -k;
+   190				s.push(k);
+   191				l = 0;
+   192				makenegative = false;
+   193			}
+   194			else if(isOption(c[j]))
+   195			{
+   196				optionSwitch(c[j], s);
+   197				currint = "";
+   198				j++;
+   199				l = 0;	
+   200			}
+   201			else if(isOperator(c[j]))
+   202			{
+   203				num1 = s.topAndPop();
+   204				num2 = s.topAndPop();
+   205				int result = (operationSwitch(num1, num2, c[j], s));
+   206				s.push(result);
+   207				
+   208				if((c[j] == '/' || c[j] == '%') && num1 == 0)
+   209					s.pop();	
+   210				
+   211				currint = "";
+   212				j++;
+   213				l = 0;
+   214			}
+   215	
+   216		}
+   217	}
+]0;shankle_p@cobra:~/CSC245/Prog2[shankle_p@cobra Prog2]$ c++ dc.cpp
+]0;shankle_p@cobra:~/CSC245/Prog2[shankle_p@cobra Prog2]$ a.out
+2 3 +
+p
+5
+6 - p
+-1
+4 6 WER   * + p
+23
+2 / p
+11
+4 % p
+3
+2 100 +
+  3 4 5 f
+5
+4
+3
+102
+3
+5df *p
+25
+rf2pc
+5
+25
+4
+3
+102
+3
+2
+f
+^Z
+[1]+  Stopped                 a.out
+]0;shankle_p@cobra:~/CSC245/Prog2[shankle_p@cobra Prog2]$ exit
+exit
+There are stopped jobs.
+]0;shankle_p@cobra:~/CSC245/Prog2[shankle_p@cobra Prog2]$ exit
+
+Script done on Fri 24 Feb 2017 11:34:41 PM EST

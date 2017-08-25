@@ -1,0 +1,57 @@
+PROGRAM 4: Dijkstra's Algorithm
+
+Preston Shankle
+
+The goal of the Dijkstra program is to take in a list of cities with destinations and the distances between them and calculate the shortest paths amongst them.
+
+Different major functions that compose the Graph class that are used to calculate the shortest path in the Dijkstra program are:
+
+	AddVertext 	-- 	adds a vertex to the graph
+	AddEdge		--	add an edge or weight between two vertices within the graph
+	WeightIs	--	calculates the weight between two graph vertices
+	GetToVertices	--	pushes all vertices that connect to a given graph vertex into a queue
+	
+The process of building the graph using Dijkstra's algorithm is as follows:
+
+	1. Set a start vertex; this will be provided by the user. Set the distance to 0 and mark it as visited.
+	2. Determine which vertices connect to the start vertex using the GetToVertices method in the graph class.
+	3. Determine which of these connected vertices has the shortest distance.
+	4. Save the shortest connected vertex in the start vertex and set the start vertex as the previous vertex.
+	5. Print out the vertex along with the distance traveled and the previous vertex.
+	6. Repeat the process until all vertices have been visited and marked.
+
+	Given a test file myFile.txt:
+
+	Mars;Jupiter;34400
+	Earth;Venus;162
+	Saturn;Neptune;38400
+	Earth;Mars;339
+	Pluto;Sun;367000
+	Mars;Neptune;559
+	Sun;Neptune;2344
+	Pluto;Saturn;3426
+	Saturn;Sun;9000
+
+With each line defined as Origin;Destination;Distance, we can easily build a graph out of this using the Dijkstra program. 
+
+Here's the sample output after this myFile.txt is ran in dijkstra.cpp with Pluto chosen as the starting location:
+
+----------------- DIJKSTRA'S ALGORITHM -------------------
+
+A Weighted Graph Has Been Built For These 8 Cities : 
+
+         Earth       Jupiter          Mars
+       Neptune         Pluto        Saturn
+           Sun         Venus
+
+ Please input your starting vertex: Pluto
+
+
+        Vertex          Distance      Previous
+
+         Pluto                 0             N/A
+        Saturn              3426           Pluto
+           Sun             12426          Saturn
+
+------------------------------------------------------------
+

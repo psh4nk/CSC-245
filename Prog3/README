@@ -1,0 +1,30 @@
+ZIP & UNZIP = non-binary, standard compression & uncompression
+              minimum program requirements
+
+c++ -c huffman.cpp
+c++ zip.cpp huffman.o
+c++ unzip.cpp
+
+
+The goal of the Huffman ADT is to implement the Huffman Encoding Algorithm to compress the contents of a string. In order to accomplish this goal, a number of functions exist with the Huffman.cpp file:
+
+	insert — inserts a character and its associated weight in a node of the Huffman Tree
+	inTree — returns a boolean value indicating whether a given character is stored in the tree
+	GetFrequency — returns the weight of a given character
+	GetCode — returns the compressed code of a given character in the tree using recursion
+	PrintTable — displays the Huffman encoding table used in the Huffman tree
+	numNodes — returns the number of nodes currently in your Huffman tree
+
+
+In order to compress the given file into a new string of remarkably smaller size and composed entirely of 1’s, 0’s and a key to designate new binary values for each of the ASCII codes for the characters that compose the string. These binary values will come from the GetCode method in the Huffman ADT. Using the Huffman ADT, the process of how the client code will compress a string inputted from a file is as follows:
+	
+	1. Loop through the string, using the insert function to create the Huffman tree. 
+	2. Create a binary representation of the string by using GetCode on every node of the tree, and concatenating.
+	3. Write ASCII values and their new binary representations on the file.zip.
+	4. After individual ASCII values written, write the binary representation of the string onto the end of the file, and exit program.
+
+In order to unzip the file, the process is as follows:
+	
+	1. Create new chars for every ASCII value representation in the file.zip, assigning them correctly.
+	2. Loop through the binary string, chopping it up and matching the chopped pieces to the binary representations of the ASCII characters.
+	3. Write the final string to the file minus the .zip file extension, and exit program.
